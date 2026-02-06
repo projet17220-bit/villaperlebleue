@@ -1,13 +1,49 @@
 ---
 ---
+<!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <title>La Perle Bleue - Airbnb Pornichet</title>
-    <meta name="description" content="Gîte 4★ Pornichet, 6 pers, piscine chauffée" />
-  </head>
-  <body>
-    <h1>🏖️ La Perle Bleue - Gîte 3★ La Rochelle</h1>
-    <p>Site en construction... mais ça marche !</p>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>🏖️ La Perle Bleue - Gîte 4★ Pornichet</title>
+  <meta name="description" content="Gîte climatisé 6 pers, piscine chauffée, 300m plage">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body{font-family:system-ui;max-w-1200px;margin:auto;padding:2rem;background:#f0f8ff}
+    .hero{background:linear-gradient(135deg,#0070f3,#00d4ff);color:white;padding:4rem;border-radius:1rem;text-align:center}
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin:3rem 0}
+    .feature{background:white;padding:2rem;border-radius:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+    img{width:100%;border-radius:1rem}
+    .prix{font-size:2rem;font-weight:bold;color:#e74c3c}
+    button{background:#0070f3;color:white;border:none;padding:1rem 2rem;border-radius:0.5rem;font-size:1.1rem;cursor:pointer}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>🏖️ La Perle Bleue</h1>
+    <h2>Gîte 4★ • 6 personnes • Pornichet</h2>
+    <p>Climatisé • Piscine chauffée • 300m plage</p>
+  </header>
+
+  <main>
+    <section class="features">
+      <div class="feature">
+        <h3>📍 Emplacement parfait</h3>
+        <p>300m plage, 5min centre Pornichet, 45min Nantes</p>
+      </div>
+      <div class="feature">
+        <h3>🏊 Piscine privative</h3>
+        <p>Chauffée 28°C, sécurisée, terrasse plein sud</p>
+      </div>
+      <div class="feature">
+        <h3>❄️ Clim + Confort</h3>
+        <p>3 chambres, 2 sdb, cuisine équipée, wifi fibre</p>
+      </div>
+    </section>
+
+    <section style="text-align:center;margin:3rem 0">
+      <h2 class="prix">à partir de 120€/nuit</h2>
+      <button onclick="window.open('https://airbnb.com/h/your-link','_blank')">📅 Réserver sur Airbnb</button>
+    </section>
+  </main>
+</body>
 </html>
