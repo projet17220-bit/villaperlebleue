@@ -1,23 +1,26 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+// src/layouts/Layout.astro
+export interface Props {
+  title: string;
+  lang: string;
+}
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+const { title, lang } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Villa La Perle Bleue - Location vacances près de La Rochelle" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content="Villa moderne avec piscine chauffée, jusqu'à 10 personnes." />
+    <meta property="og:image" content="/images/perle-bleue-piscine.jpg" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-gray-50 font-sans antialiased">
+    <slot />  <!-- Contenu des pages ici -->
+  </body>
+</html>
