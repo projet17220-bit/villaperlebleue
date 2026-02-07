@@ -6,7 +6,7 @@ import BookingForm from '../components/BookingForm.astro';
 import LangToggle from '../components/LangToggle.astro';
 
 const lang = Astro.url.searchParams.get('lang') || 'fr';
-const t = await import(`../i18n/${lang}.json`).then(m => m.default);
+const t = await import(`./${lang}.json`).then(m => m.default);
 
 const indisponibles = [
   '2026-02-14', '2026-02-15', '2026-02-20'  // Éditez manuellement vos dates booked
