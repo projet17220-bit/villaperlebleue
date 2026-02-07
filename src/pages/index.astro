@@ -4,26 +4,24 @@ const lang = Astro.url.searchParams.get('lang') || 'fr';
 const t = lang === 'fr' ? {
   title: "Villa La Perle Bleue",
   hero_desc: "Séjournez dans une villa moderne et paisible près de La Rochelle. Jusqu'à 10 personnes.",
-  prix: "À partir de 350€/nuit (min. 3 nuits - contactez pour devis)",
+  prix: "À partir de 350€/nuit (min. 3 nuits)",
   dispo: "Disponibilités",
   resa: "Demander une réservation",
   annulation: "Annulation gratuite jusqu'à 30 jours avant. 50% de frais ensuite.",
   paiement: "Paiement par virement bancaire après validation manuelle.",
-  confort: "Confort & divertissement",
-  exterieur: "Espace extérieur"
+  confort: "Confort & divertissement"
 } : {
   title: "Villa La Perle Bleue",
   hero_desc: "Modern peaceful villa near La Rochelle. Up to 10 guests.",
-  prix: "From 350€/night (min. 3 nights - contact for quote)",
+  prix: "From 350€/night (min. 3 nights)",
   dispo: "Availability",
   resa: "Request booking",
   annulation: "Free cancellation up to 30 days. 50% fee after.",
   paiement: "Bank transfer after manual approval.",
-  confort: "Comfort & entertainment",
-  exterieur: "Outdoor space"
+  confort: "Comfort & entertainment"
 };
 
-const indisponibles = ['14','15','20']; // Février booked
+const indisponibles = ['14','15','20'];
 ---
 
 <!doctype html>
@@ -33,178 +31,88 @@ const indisponibles = ['14','15','20']; // Février booked
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{t.title}</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-blue-50 font-['Inter'] antialiased min-h-screen">
 
 <style>
-  .hero-slide1 { animation: heroSlide1 30s infinite; }
-  .hero-slide2 { animation: heroSlide2 30s infinite 10s; }
-  .hero-slide3 { animation: heroSlide3 30s infinite 20s; }
-  @keyframes heroSlide1 {
-    0%, 30% { opacity: 1; }
-    33%, 100% { opacity: 0; }
+  /* CARROUSEL CORRIGÉ : Une seule image visible à la fois */
+  .carousel-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
   }
-  @keyframes heroSlide2 {
-    0%, 33% { opacity: 0; }
-    36%, 66% { opacity: 1; }
-    69%, 100% { opacity: 0; }
+  .carousel-img.active { opacity: 1; }
+  
+  .card-hover { 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
   }
-  @keyframes heroSlide3 {
-    0%, 66% { opacity: 0; }
-    69%, 99% { opacity: 1; }
-    100% { opacity: 0; }
+  .card-hover:hover { 
+    transform: translateY(-8px) scale(1.01); 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.12); 
   }
-  .card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-  .card-hover:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 25px 50px rgba(0,0,0,0.12); }
 </style>
 
 <!-- Toggle FR/EN -->
-<nav class="fixed top-4 right-4 z-50 bg-white/95 backdrop-blur-xl shadow-xl rounded-2xl p-2 border border-white/50 md:top-6 md:right-6">
+<nav class="fixed top-4 right-4 z-50 bg-white/95 backdrop-blur-xl shadow-xl rounded-2xl p-2 border md:top-6 md:right-6">
   <a href="?lang=fr" class={`px-4 py-2 rounded-xl font-semibold text-xs md:text-sm tracking-wide transition-all ${lang === 'fr' ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg' : 'hover:bg-blue-50 text-gray-700'}`}>FR</a>
   <a href="?lang=en" class={`px-4 py-2 rounded-xl font-semibold text-xs md:text-sm tracking-wide ml-1 md:ml-2 transition-all ${lang === 'en' ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg' : 'hover:bg-blue-50 text-gray-700'}`}>EN</a>
 </nav>
 
-<!-- HERO CARROUSEL COMPACT (50vh mobile, 70vh desktop) -->
-<section class="relative h-[50vh] md:h-[70vh] overflow-hidden">
-  <div class="absolute inset-0">
-    <!-- 6 images en carrousel auto (déjà superposées, pas de scroll) -->
-    <img src="/hero.jpeg" alt="Villa La Perle Bleue" class="w-full h-full object-cover hero-slide1" loading="eager" />
-    <img src="/chaiseslongues.jpeg" alt="Chaises longues piscine" class="w-full h-full object-cover absolute inset-0 hero-slide2" loading="lazy" />
-    <img src="/pingpong.jpeg" alt="Table ping-pong" class="w-full h-full object-cover absolute inset-0 hero-slide3" loading="lazy" />
-    <img src="/piscinenuit.jpeg" alt="Piscine nuit" class="w-full h-full object-cover absolute inset-0 hero-slide1" style="animation-delay: 0s;" loading="lazy" />
-    <img src="/salon1.jpeg" alt="Salon lumineux" class="w-full h-full object-cover absolute inset-0 hero-slide2" style="animation-delay: 10s;" loading="lazy" />
-    <img src="/salonvuetable.jpeg" alt="Salon vue table" class="w-full h-full object-cover absolute inset-0 hero-slide3" style="animation-delay: 20s;" loading="lazy" />
+<!-- HERO CARROUSEL CORRIGÉ (6 images, contrôles + auto) -->
+<section class="relative h-[45vh] md:h-[60vh] lg:h-[65vh] overflow-hidden bg-black">
+  <div id="carousel" class="relative w-full h-full">
+    <!-- Images CARROUSEL (seule l'active est visible) -->
+    <img src="/hero.jpeg" alt="Villa La Perle Bleue" class="carousel-img active" data-index="0" />
+    <img src="/chaiseslongues.jpeg" alt="Chaises longues piscine" class="carousel-img" data-index="1" />
+    <img src="/pingpong.jpeg" alt="Table ping-pong" class="carousel-img" data-index="2" />
+    <img src="/piscinenuit.jpeg" alt="Piscine nuit" class="carousel-img" data-index="3" />
+    <img src="/salon1.jpeg" alt="Salon lumineux" class="carousel-img" data-index="4" />
+    <img src="/salonvuetable.jpeg" alt="Salon vue table" class="carousel-img" data-index="5" />
   </div>
-  
-  <!-- Contenu hero compact -->
-  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-center items-center text-white text-center px-4 md:px-6 z-10">
-    <h1 class="text-3xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-2xl leading-tight">
+
+  <!-- Contenu hero -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent flex flex-col justify-center items-center text-white text-center px-4 md:px-6 z-20">
+    <h1 class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 md:mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-2xl">
       {t.title}
     </h1>
-    <p class="text-base md:text-lg lg:text-xl mb-6 md:mb-8 max-w-2xl md:max-w-3xl leading-relaxed opacity-95 font-medium">
+    <p class="text-sm md:text-base lg:text-lg mb-6 md:mb-8 max-w-xl md:max-w-2xl leading-relaxed opacity-95 font-medium">
       {t.hero_desc}
     </p>
-    <div class="bg-white/20 backdrop-blur-xl p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl border border-white/30">
-      <p class="text-2xl md:text-3xl lg:text-4xl font-black mb-4 md:mb-6 text-yellow-300 drop-shadow-lg">{t.prix}</p>
-      <a href="#resa" class="inline-block bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-8 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl font-bold text-lg md:text-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-500">
+    <div class="bg-white/20 backdrop-blur-xl p-5 md:p-6 lg:p-8 rounded-2xl shadow-2xl border border-white/30">
+      <p class="text-xl md:text-2xl lg:text-3xl font-black mb-3 md:mb-4 text-yellow-300 drop-shadow-lg">{t.prix}</p>
+      <a href="#resa" class="inline-block bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
         {t.resa}
       </a>
     </div>
   </div>
+
+  <!-- Indicateurs + Contrôles -->
+  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">
+    <button onclick="changeSlide(-1)" class="w-2 h-2 md:w-3 md:h-3 bg-white/50 rounded-full hover:bg-white transition-all duration-300 carousel-dot" data-active="false"></button>
+    <button onclick="changeSlide(-1)" class="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full shadow-lg carousel-dot" data-active="true"></button>
+    <button onclick="changeSlide(1)" class="w-2 h-2 md:w-3 md:h-3 bg-white/50 rounded-full hover:bg-white transition-all duration-300 carousel-dot" data-active="false"></button>
+    <button onclick="changeSlide(1)" class="w-2 h-2 md:w-3 md:h-3 bg-white/50 rounded-full hover:bg-white transition-all duration-300 carousel-dot" data-active="false"></button>
+    <button onclick="changeSlide(1)" class="w-2 h-2 md:w-3 md:h-3 bg-white/50 rounded-full hover:bg-white transition-all duration-300 carousel-dot" data-active="false"></button>
+    <button onclick="changeSlide(1)" class="w-2 h-2 md:w-3 md:h-3 bg-white/50 rounded-full hover:bg-white transition-all duration-300 carousel-dot" data-active="false"></button>
+  </div>
+
+  <!-- Flèches navigation (optionnel) -->
+  <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold backdrop-blur-xl z-30 md:w-14 md:h-14 transition-all duration-300">‹</button>
+  <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold backdrop-blur-xl z-30 md:w-14 md:h-14 transition-all duration-300">›</button>
 </section>
 
-<!-- Contenu principal COMPACT -->
+<!-- Contenu principal (identique version précédente, compact) -->
 <main class="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20 space-y-16 md:space-y-20">
-  
-  <!-- Équipements (réduits) -->
+
+  <!-- Équipements -->
   <section class="text-center">
     <h2 class="text-4xl md:text-5xl font-black mb-12 md:mb-16 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{t.confort}</h2>
     <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-      <div class="group p-6 md:p-8 lg:p-10 bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border border-white/50 card-hover h-full">
-        <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform">
-          <span class="text-2xl md:text-3xl lg:text-3xl">🏊</span>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-800">Piscine chauffée</h3>
-        <p class="text-sm md:text-base text-gray-600 leading-relaxed">7x3,5m + plage</p>
-      </div>
-      <!-- Répétez pour les 3 autres avec mêmes classes h-full -->
-      <div class="group p-6 md:p-8 lg:p-10 bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border border-white/50 card-hover h-full">
-        <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform">
-          <span class="text-2xl md:text-3xl lg:text-3xl">📺</span>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-800">Streaming illimité</h3>
-        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Netflix, Canal+, Disney+</p>
-      </div>
-      <div class="group p-6 md:p-8 lg:p-10 bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border border-white/50 card-hover h-full">
-        <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform">
-          <span class="text-2xl md:text-3xl lg:text-3xl">🚗</span>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-800">Parking + Garage</h3>
-        <p class="text-sm md:text-base text-gray-600 leading-relaxed">3 voitures + 30m²</p>
-      </div>
-      <div class="group p-6 md:p-8 lg:p-10 bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border border-white/50 card-hover h-full">
-        <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform">
-          <span class="text-2xl md:text-3xl lg:text-3xl">⚽</span>
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-gray-800">Baby-foot & Ping-pong</h3>
-        <p class="text-sm md:text-base text-gray-600 leading-relaxed">Divertissement garanti</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Calendrier COMPACT -->
-  <section id="dispo" class="py-16 md:py-20 bg-white/60 backdrop-blur-xl rounded-3xl -mx-4 md:-mx-6 lg:-mx-12">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-4xl md:text-5xl font-black text-center mb-12 md:mb-16 bg-gradient-to-r from-gray-900 to-slate-800 bg-clip-text text-transparent">{t.dispo}</h2>
-      <div class="grid md:grid-cols-2 gap-6 md:gap-8">
-        <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 md:p-8 lg:p-10 rounded-2xl md:rounded-3xl shadow-xl border-2 md:border-4 border-emerald-200/50">
-          <h3 class="text-2xl md:text-3xl font-bold mb-6 text-center text-emerald-900">Février 2026</h3>
-          <div class="grid grid-cols-7 gap-2 md:gap-3">
-            {['L','M','M','J','V','S','D'].map(j => (
-              <div class="font-bold p-3 md:p-4 text-xs md:text-sm text-emerald-700 uppercase tracking-wider text-center">{j}</div>
-            ))}
-            {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28].map(j => {
-              const booked = indisponibles.includes(j.toString());
-              return (
-                <div class={`p-3 md:p-4 lg:p-5 rounded-xl text-lg md:text-xl font-bold text-center transition-all cursor-pointer hover:scale-105 shadow-sm md:shadow-md ${booked ? 'bg-gradient-to-r from-red-400 to-red-500 text-white shadow-red-200 hover:scale-100 line-through' : 'bg-white shadow-md hover:shadow-lg hover:bg-emerald-100 border border-emerald-200 md:border-2'}`}>
-                  {j}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 md:p-8 lg:p-10 rounded-2xl md:rounded-3xl shadow-xl border-2 md:border-4 border-blue-200/50 flex items-center justify-center">
-          <div class="text-center">
-            <h3 class="text-2xl md:text-3xl font-bold mb-4 text-blue-900">Mars 2026</h3>
-            <p class="text-lg md:text-xl text-blue-700">Bientôt disponible</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Réservation COMPACTE -->
-  <section id="resa" class="text-center py-20 md:py-28">
-    <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-12 md:mb-16 bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">{t.resa}</h2>
-    
-    <form name="reservation" method="POST" netlify data-netlify="true" class="max-w-xl md:max-w-2xl mx-auto space-y-6 md:space-y-8 mb-12 md:mb-16">
-      <input type="hidden" name="form-name" value="reservation" />
-      <input type="text" name="nom" placeholder="Nom complet *" required 
-             class="w-full p-6 md:p-7 lg:p-8 text-lg md:text-xl border-2 md:border-4 border-gray-200 rounded-2xl md:rounded-3xl focus:ring-4 md:focus:ring-8 focus:ring-emerald-200 focus:border-emerald-500 shadow-lg md:shadow-xl" />
-      <div class="grid grid-cols-2 gap-4 md:gap-6">
-        <input type="email" name="email" placeholder="Email *" required 
-               class="p-6 md:p-7 lg:p-8 text-lg md:text-xl border-2 md:border-4 border-gray-200 rounded-2xl md:rounded-3xl focus:ring-4 md:focus:ring-8 focus:ring-emerald-200 shadow-lg md:shadow-xl" />
-        <input type="tel" name="tel" placeholder="Téléphone" 
-               class="p-6 md:p-7 lg:p-8 text-lg md:text-xl border-2 md:border-4 border-gray-200 rounded-2xl md:rounded-3xl focus:ring-4 md:focus:ring-8 focus:ring-emerald-200 shadow-lg md:shadow-xl" />
-      </div>
-      <div class="grid grid-cols-2 gap-4 md:gap-6">
-        <input type="date" name="checkin" required 
-               class="p-6 md:p-7 lg:p-8 text-lg md:text-xl border-2 md:border-4 border-gray-200 rounded-2xl md:rounded-3xl focus:ring-4 md:focus:ring-8 focus:ring-emerald-200 shadow-lg md:shadow-xl" />
-        <input type="date" name="checkout" required 
-               class="p-6 md:p-7 lg:p-8 text-lg md:text-xl border-2 md:border-4 border-gray-200 rounded-2xl md:rounded-3xl focus:ring-4 md:focus:ring-8 focus:ring-emerald-200 shadow-lg md:shadow-xl" />
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white py-8 md:py-9 lg:py-10 px-8 md:px-12 rounded-2xl md:rounded-3xl font-black text-xl md:text-2xl shadow-xl md:shadow-2xl hover:shadow-2xl md:hover:shadow-3xl transform hover:-translate-y-2 md:hover:-translate-y-3 transition-all duration-500">
-        {t.resa} →
-      </button>
-    </form>
-    
-    <div class="max-w-2xl md:max-w-3xl mx-auto bg-gradient-to-r from-yellow-100 to-orange-100 p-8 md:p-10 lg:p-12 rounded-3xl md:rounded-4xl shadow-xl md:shadow-2xl border-2 md:border-4 border-yellow-200/50">
-      <h3 class="text-2xl md:text-3xl font-black mb-6 md:mb-8 text-yellow-900">📋 Conditions de réservation</h3>
-      <div class="grid md:grid-cols-2 gap-6 md:gap-8 text-lg md:text-xl text-gray-800">
-        <div><strong>{t.annulation}</strong></div>
-        <div><strong>{t.paiement}</strong></div>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer class="bg-gradient-to-r from-slate-900 to-blue-900 text-white py-12 md:py-14 text-center px-4">
-  <p class="text-lg md:text-xl">&copy; 2026 <strong>Villa La Perle Bleue</strong> | La Rochelle</p>
-  <p class="mt-2 md:mt-4 text-base md:text-lg opacity-90">Meublé de Tourisme | Piscine chauffée | Jusqu'à 10 personnes</p>
-</footer>
-
-</body>
-</html>
+      <div class="group p-6 md:p-10 bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-xl border border-white/50 card-hover">
+        <div class="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-blue-
