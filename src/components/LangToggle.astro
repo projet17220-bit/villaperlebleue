@@ -1,0 +1,15 @@
+---
+// src/components/LangToggle.astro
+const current = Astro.props.current;
+---
+
+<nav class="fixed top-6 right-6 z-50 bg-white/95 backdrop-blur-md shadow-lg rounded-2xl p-2 border border-gray-200">
+  <a href="?lang=fr" 
+     class={`px-4 py-2 rounded-xl font-semibold transition-all ${current === 'fr' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-gray-100 text-gray-700'}`}>
+    FR
+  </a>
+  <a href="?lang=en" 
+     class={`px-4 py-2 rounded-xl font-semibold transition-all ml-1 ${current === 'en' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-gray-100 text-gray-700'}`}>
+    EN
+  </a>
+</nav>
