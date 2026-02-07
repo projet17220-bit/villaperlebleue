@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "astro": "^5.17.1",
+    "date-fns": "^4.1.0",
     "prismjs": "^1.30.0",
     "shiki": "^3.22.0"
   }
