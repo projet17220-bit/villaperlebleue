@@ -75,50 +75,49 @@ const indisponibles = ['14','15','20'];
   <a href="?lang=en" class={`px-4 py-2 rounded-xl font-semibold text-xs md:text-sm tracking-wide ml-1 md:ml-2 transition-all ${lang === 'en' ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg' : 'hover:bg-blue-50 text-gray-700'}`}>EN</a>
 </nav>
 
-<!-- HERO CARROUSEL CORRIGÉ (z-index texte > images) -->
-<!-- HERO CARROUSEL FIX DÉFINITIF (overlay + z-index béton) -->
-<section class="relative h-[45vh] md:h-[60vh] lg:h-[65vh] overflow-hidden">
+<!-- HERO COMPACT FIXÉ (hauteur réduite + contenu visible) -->
+<section class="relative h-80 md:h-[50vh] lg:h-[55vh] overflow-hidden bg-gray-900">
   
-  <!-- CONTENU TEXTE EN PREMIER (z-index max) -->
-  <div class="absolute inset-0 z-50 flex flex-col justify-center items-center text-white text-center px-4 md:px-6 pt-12 pb-20 md:pb-24">
-    <!-- FOND NOIR SOLIDE -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/50 z-40"></div>
+  <!-- TEXTE AU-DESSUS (z-50) -->
+  <div class="absolute inset-0 z-50 flex flex-col justify-center items-center text-white text-center px-4 md:px-8 py-8 md:py-12">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/60 z-40"></div>
     
-    <h1 class="relative z-50 text-3xl md:text-4xl lg:text-5xl font-black mb-3 md:mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+    <h1 class="relative z-50 text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black mb-2 md:mb-3 bg-gradient-to-r from-white via-blue-50 to-blue-200 bg-clip-text text-transparent drop-shadow-2xl">
       {t.title}
     </h1>
-    <p class="relative z-50 text-sm md:text-base lg:text-lg mb-6 md:mb-8 max-w-xl md:max-w-2xl leading-relaxed font-medium drop-shadow-2xl">
+    <p class="relative z-50 text-sm md:text-base mb-4 md:mb-6 max-w-md md:max-w-lg lg:max-w-xl leading-relaxed drop-shadow-xl">
       {t.hero_desc}
     </p>
-    <div class="relative z-50 bg-white/30 backdrop-blur-2xl p-5 md:p-6 lg:p-8 rounded-2xl shadow-2xl border border-white/50">
-      <p class="text-xl md:text-2xl lg:text-3xl font-black mb-3 md:mb-4 text-yellow-300 drop-shadow-2xl">{t.prix}</p>
-      <a href="#resa" class="inline-block bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 md:px-10 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-base md:text-lg shadow-2xl hover:shadow-3xl hover:-translate-y-1 transition-all duration-500">
+    <div class="relative z-50 bg-white/20 backdrop-blur-xl p-4 md:p-6 rounded-xl shadow-2xl border border-white/40">
+      <p class="text-lg md:text-xl lg:text-2xl font-black mb-2 md:mb-3 text-yellow-300 drop-shadow-xl">{t.prix}</p>
+      <a href="#resa" class="inline-block bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 md:px-8 md:py-3.5 rounded-xl font-bold text-sm md:text-base shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-400">
         {t.resa}
       </a>
     </div>
   </div>
 
-  <!-- CARROUSEL IMAGES (z-index BAS = 10) -->
-  <div id="carousel-container" class="relative w-full h-full z-10">
-    <img src="/hero.jpeg" alt="Villa" class="carousel-img absolute inset-0 w-full h-full object-cover active" data-index="0" />
-    <img src="/chaiseslongues.jpeg" alt="Piscine" class="carousel-img absolute inset-0 w-full h-full object-cover" data-index="1" />
-    <img src="/pingpong.jpeg" alt="Ping-pong" class="carousel-img absolute inset-0 w-full h-full object-cover" data-index="2" />
-    <img src="/piscinenuit.jpeg" alt="Nuit" class="carousel-img absolute inset-0 w-full h-full object-cover" data-index="3" />
-    <img src="/salon1.jpeg" alt="Salon" class="carousel-img absolute inset-0 w-full h-full object-cover" data-index="4" />
-    <img src="/salonvuetable.jpeg" alt="Salon table" class="carousel-img absolute inset-0 w-full h-full object-cover" data-index="5" />
+  <!-- CARROUSEL (z-10, hauteur fixe) -->
+  <div id="carousel-container" class="w-full h-full z-10">
+    <img src="/hero.jpeg" class="carousel-img absolute inset-0 w-full h-full object-cover opacity-100 active" data-index="0" style="opacity:1;" />
+    <img src="/chaiseslongues.jpeg" class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0" data-index="1" />
+    <img src="/pingpong.jpeg" class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0" data-index="2" />
+    <img src="/piscinenuit.jpeg" class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0" data-index="3" />
+    <img src="/salon1.jpeg" class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0" data-index="4" />
+    <img src="/salonvuetable.jpeg" class="carousel-img absolute inset-0 w-full h-full object-cover opacity-0" data-index="5" />
   </div>
 
-  <!-- CONTRÔLES (z-index 60) -->
-  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-60">
-    <button class="w-3 h-3 bg-white/80 rounded-full active-dot shadow-lg hover:scale-125 transition-all" onclick="goToSlide(0)"></button>
-    <button class="w-3 h-3 bg-white/60 rounded-full hover:bg-white shadow-md hover:scale-125 transition-all" onclick="goToSlide(1)"></button>
-    <button class="w-3 h-3 bg-white/60 rounded-full hover:bg-white shadow-md hover:scale-125 transition-all" onclick="goToSlide(2)"></button>
-    <button class="w-3 h-3 bg-white/60 rounded-full hover:bg-white shadow-md hover:scale-125 transition-all" onclick="goToSlide(3)"></button>
-    <button class="w-3 h-3 bg-white/60 rounded-full hover:bg-white shadow-md hover:scale-125 transition-all" onclick="goToSlide(4)"></button>
-    <button class="w-3 h-3 bg-white/60 rounded-full hover:bg-white shadow-md hover:scale-125 transition-all" onclick="goToSlide(5)"></button>
+  <!-- CONTRÔLES petits (z-60) -->
+  <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1.5 z-60 p-2 bg-black/40 rounded-full">
+    <button class="w-2.5 h-2.5 bg-white/90 rounded-full active-dot shadow hover:scale-110 transition-all" onclick="goToSlide(0)"></button>
+    <button class="w-2.5 h-2.5 bg-white/60 rounded-full hover:bg-white hover:scale-110 transition-all" onclick="goToSlide(1)"></button>
+    <button class="w-2.5 h-2.5 bg-white/60 rounded-full hover:bg-white hover:scale-110 transition-all" onclick="goToSlide(2)"></button>
+    <button class="w-2.5 h-2.5 bg-white/60 rounded-full hover:bg-white hover:scale-110 transition-all" onclick="goToSlide(3)"></button>
+    <button class="w-2.5 h-2.5 bg-white/60 rounded-full hover:bg-white hover:scale-110 transition-all" onclick="goToSlide(4)"></button>
+    <button class="w-2.5 h-2.5 bg-white/60 rounded-full hover:bg-white hover:scale-110 transition-all" onclick="goToSlide(5)"></button>
   </div>
-  <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/60 hover:bg-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold z-60 transition-all shadow-lg hover:shadow-xl">‹</button>
-  <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/60 hover:bg-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold z-60 transition-all shadow-lg hover:shadow-xl">›</button>
+  
+  <button onclick="changeSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold z-60 transition-all shadow-lg hover:shadow-xl">‹</button>
+  <button onclick="changeSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold z-60 transition-all shadow-lg hover:shadow-xl">›</button>
 
 </section>
 
