@@ -1,0 +1,46 @@
+---
+// src/components/Calendar.astro
+import { format, eachDayOfInterval, startOfMonth, endOfMonth, addMonths, isSameDay } from 'date-fns';
+
+const mois = Astro.props.mois || [{year: 2026, month: 2}];
+const indisponibles = Astro.props.indisponibles || [];
+---
+
+<div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+  {mois.map((m, i) => {
+    const start = startOfMonth(new Date(m.year, m.month - 1));
+    const end = endOfMonth(start);
+    const days = eachDayOfInterval({start, end});
+    return (
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h3 class="text-xl font-bold mb-4 text-center">{format(start, 'MMMM yyyy', {locale: Astro.props.lang === 'fr' ? require('date-fns/locale/fr') : require('date-fns/locale/en-US') })}</h3>
+        <div class="grid grid-cols-7 gap-2">
+          {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(day => (
+            <div class="font-bold text-center p-2 text-sm uppercase tracking-wide text-gray-500">{day}</div>
+          ))}
+          {days.map(day => {
+            const dateStr = format(day, 'yyyy-MM-dd');
+            const libre = !indisponibles.includes(dateStr);
+            const today = isSameDay(day, new Date());
+            return (
+              <div class={`p-3 rounded-xl text-sm font-medium h-20 transition-all hover:scale-105 ${libre ? 'bg-gradient-to-br from-emerald-100 to-emerald-200 hover:from-emerald-200 cursor-pointer' : 'bg-gray-200 text-gray-400 line-through'} ${today ? 'ring-4 ring-blue-300 bg-blue-200' : ''}`}>
+                {format(day, 'd')}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  })}
+</div>
+<p class="text-center mt-8 text-gray-600 italic">Vert = disponible. Éditez dates dans index.astro pour mise à jour.</p>
+
+<script>
+  // Interaction basique (sélection dates)
+  document.querySelectorAll('.hover\\:scale-105').forEach(cell => {
+    cell.addEventListener('click', () => {
+      cell.classList.toggle('ring-2');
+      cell.classList.toggle('ring-blue-400');
+    });
+  });
+</script>
